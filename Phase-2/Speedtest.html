@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.5s;
+    }
+
+    #timer {
+      font-size: 20px;
+      transition: color 0.5s;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin: 10px 0;
+      transition: border-color 0.5s;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    button.start {
+      background-color: #3498db;
+      color: #fff;
+    }
+
+    button.start:hover {
+      background-color: #2980b9;
+    }
+
+    button.check {
+      background-color: #2ecc71;
+      color: #fff;
+    }
+
+    button.check:hover {
+      background-color: #27ae60;
+    }
+
+    .light-theme {
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+
+    .dark-theme {
+      background-color: #343a40;
+      color: #fff;
+    }
+  </style>
+  <title>Advanced Typing Speed Test</title>
+</head>
+<body class="light-theme">
+  <div class="container">
+    <h1 id="timer">Time Left: 60s</h1>
+    <p id="text-to-type"></p>
+    <textarea id="user-input" placeholder="Start typing..."></textarea>
+    <button class="start" onclick="startTest()">Start Test</button>
+    <button class="check" onclick="calculateSpeed()">Check Speed</button>
+    <p id="speed-result"></p>
+    <label for="difficulty">Difficulty Level:</label>
+    <select id="difficulty" onchange="changeDifficulty()">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+    <label for="theme">Theme:</label>
+    <select id="theme" onchange="changeTheme()">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </div>
+  <script>
+    let timer;
+    let startTime;
+    let endTime;
+    let difficulty = "easy";
+
+    const texts = {
+      easy: "The quick brown fox jumps over the lazy dog.",
+      medium: "Programming is fun and challenging.",
+      hard: "Success is not final, failure is not fatal: It is the courage to continue that counts."
+    };
+
+    function startTest() {
+      document.getElementById("user-input").readOnly = false;
+      const textToType = texts[difficulty];
+
+      document.getElementById("text-to-type").innerText = textToType;
+      document.getElementById("user-input").value = "";
+      document.getElementById("speed-result").innerText = "";
+
+      startTimer();
+      document.querySelector(".check").disabled = false;
+    }
+
+    function startTimer() {
+      let seconds = 60;
+      document.getElementById("timer").innerText = `Time Left: ${seconds}s`;
+
+      timer = setInterval(() => {
+        seconds--;
+
+        if (seconds === 0) {
+          clearInterval(timer);
+          document.getElementById("timer").innerText = "Time's up!";
+          document.getElementById("user-input").readOnly = true;
+        } else {
+          document.getElementById("timer").innerText = `Time Left: ${seconds}s`;
+        }
+      }, 1000);
+
+      startTime = new Date();
+    }
+
+    function calculateSpeed() {
+      clearInterval(timer);
+      endTime = new Date();
+
+      const textToType = document.getElementById("text-to-type").innerText.trim().split(" ");
+      const userInput = document.getElementById("user-input").value.trim().split(" ");
+
+      const correctWords = textToType.filter((word, index) => word === userInput[index]);
+      const accuracy = (correctWords.length / textToType.length) * 100;
+
+      const wordsPerMinute = Math.round((correctWords.length / 5) * 60);
+
+      const resultElement = document.getElementById("speed-result");
+      resultElement.innerHTML = `Accuracy: ${accuracy.toFixed(2)}%<br>Typing Speed: ${wordsPerMinute} words per minute.`;
+
+      document.getElementById("timer").innerText = "Typing test completed!";
+      document.getElementById("user-input").readOnly = true;
+    }
+
+    function changeDifficulty() {
+      difficulty = document.getElementById("difficulty").value;
+      startTest();
+    }
+
+    function changeTheme() {
+      const theme = document.getElementById("theme").value;
+      document.body.className = theme + "-theme";
+    }
+  </script>
+</body>
+</html
+
